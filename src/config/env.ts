@@ -24,3 +24,8 @@ export const GITHUB_CLIENT_SECRET = requireEnv('GITHUB_CLIENT_SECRET');
 export const GITHUB_CALLBACK_URL = requireEnv('GITHUB_CALLBACK_URL');
 export const GITHUB_TOKEN_ENCRYPTION_KEY =
   process.env.GITHUB_TOKEN_ENCRYPTION_KEY ?? GITHUB_CLIENT_SECRET;
+
+export const AWS_ACCESS_KEY_ID = requireEnv('AWS_ACCESS_KEY_ID');
+export const AWS_SECRET_ACCESS_KEY = requireEnv('AWS_SECRET_ACCESS_KEY');
+export const AWS_REGION = requireEnv('AWS_REGION');
+export const AWS_AMI_ID = requireEnv('AWS_AMI_ID');

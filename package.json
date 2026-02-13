@@ -19,6 +19,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@aws-sdk/client-ec2": "^3.990.0",
         "@prisma/client": "^5.19.1",
         "bcryptjs": "^3.0.3",
         "cookie-parser": "^1.4.7",

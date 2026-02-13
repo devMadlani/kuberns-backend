@@ -7,6 +7,7 @@ import asyncHandler from './middlewares/asyncHandler';
 import errorMiddleware from './middlewares/error.middleware';
 import notFoundMiddleware from './middlewares/notfound.middleware';
 import authRouter from './modules/auth/auth.routes';
+import deploymentRouter from './modules/deployment/deployment.routes';
 import gitRouter from './modules/git/git.routes';
 import webAppRouter from './modules/webapp/webapp.routes';
 
@@ -42,6 +43,8 @@ app.use('/git', gitRouter);
 app.use('/api', gitRouter);
 app.use('/webapps', webAppRouter);
 app.use('/api/webapps', webAppRouter);
+app.use('/', deploymentRouter);
+app.use('/api', deploymentRouter);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 

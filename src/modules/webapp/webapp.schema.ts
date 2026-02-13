@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const allowedRegions = ['us-east-1', 'us-west-1', 'eu-central-1'] as const;
+export const allowedRegions = ['us-east-1', 'us-west-1', 'eu-central-1', 'ap-south-1'] as const;
 export const allowedPlans = ['starter', 'pro'] as const;
 
 export const createWebAppSchema = z.object({

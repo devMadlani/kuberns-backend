@@ -23,13 +23,13 @@ const planToResource: Record<(typeof allowedPlans)[number], PlanResource> = {
     cpu: 1,
     ram: 1024,
     storage: 10,
-    instanceType: 'shared',
+    instanceType: 't2.micro',
   },
   pro: {
     cpu: 2,
     ram: 4096,
     storage: 50,
-    instanceType: 'dedicated',
+    instanceType: 't3.medium',
   },
 };
 

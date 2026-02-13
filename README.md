@@ -32,17 +32,21 @@ backend/
 ## Setup
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Set up environment variables:**
+
    ```bash
    cp .env.example .env
    ```
+
    Edit `.env` with your PostgreSQL connection string.
 
 3. **Set up the database:**
+
    ```bash
    # Generate Prisma Client
    npm run prisma:generate
@@ -68,6 +72,7 @@ backend/
 ## API Endpoints
 
 ### Health Check
+
 - `GET /health` - Returns `{ "status": "OK" }`
 
 ## Environment Variables
@@ -82,6 +87,7 @@ The server runs on `http://localhost:5000` by default (or the port specified in 
 ## Production
 
 1. Build the project:
+
    ```bash
    npm run build
    ```

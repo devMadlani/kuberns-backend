@@ -1,8 +1,10 @@
-import express, { Router } from 'express';
 import cors from 'cors';
+import express, { Router } from 'express';
+
 import asyncHandler from './middlewares/asyncHandler';
 import errorMiddleware from './middlewares/error.middleware';
 import notFoundMiddleware from './middlewares/notfound.middleware';
+import gitRouter from './modules/git/git.routes';
 
 const app = express();
 const routes = Router();
@@ -24,6 +26,8 @@ routes.get(
 );
 
 app.use(routes);
+app.use('/git', gitRouter);
+app.use('/api', gitRouter);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 

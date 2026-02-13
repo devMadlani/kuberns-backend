@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { DATABASE_URL } from './env';
+import logger from './logger';
 
 const prisma = new PrismaClient({
   datasources: {
@@ -12,9 +13,10 @@ const prisma = new PrismaClient({
 export const connectDB = async (): Promise<void> => {
   try {
     await prisma.$connect();
-    console.log('✅ Database connected successfully');
+    logger.info('Database connected successfully');
   } catch (error) {
-    console.error('❌ Database connection failed:', error);
+    const message = error instanceof Error ? error.message : 'Unknown database connection error';
+    logger.error(`Database connection failed: ${message}`);
     process.exit(1);
   }
 };

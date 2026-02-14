@@ -9,6 +9,7 @@ import notFoundMiddleware from './middlewares/notfound.middleware';
 import authRouter from './modules/auth/auth.routes';
 import deploymentRouter from './modules/deployment/deployment.routes';
 import gitRouter from './modules/git/git.routes';
+import metadataRouter from './modules/metadata/metadata.routes';
 import webAppRouter from './modules/webapp/webapp.routes';
 
 const app = express();
@@ -41,6 +42,8 @@ app.use('/auth', authRouter);
 app.use('/api/auth', authRouter);
 app.use('/git', gitRouter);
 app.use('/api', gitRouter);
+app.use('/metadata', metadataRouter);
+app.use('/api/metadata', metadataRouter);
 app.use('/webapps', webAppRouter);
 app.use('/api/webapps', webAppRouter);
 app.use('/', deploymentRouter);

@@ -1,4 +1,5 @@
 import { resolveAwsConfig } from '../config/aws';
+import { planConfigs } from '../config/plans';
 import { DeploymentRepository } from '../modules/deployment/deployment.repository';
 import { ApiError } from '../utils/ApiError';
 
@@ -17,13 +18,6 @@ type StartDeploymentInput = {
 type StartDeploymentResult = {
   publicIp: string;
   status: 'active';
-};
-
-type SupportedPlan = 'starter' | 'pro';
-
-const planToInstanceType: Record<SupportedPlan, string> = {
-  starter: 't2.micro',
-  pro: 't3.medium',
 };
 
 export class DeploymentEngineService {
@@ -156,12 +150,8 @@ export class DeploymentEngineService {
   }
 
   private resolveInstanceType(plan: string): string {
-    if (plan === 'starter') {
-      return planToInstanceType.starter;
-    }
-
-    if (plan === 'pro') {
-      return planToInstanceType.pro;
+    if (plan in planConfigs) {
+      return planConfigs[plan as keyof typeof planConfigs].resources.instanceType;
     }
 
     throw new ApiError(400, `Unsupported plan: ${plan}`);

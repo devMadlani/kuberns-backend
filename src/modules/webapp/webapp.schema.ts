@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 import { allowedAwsRegions } from '../../config/aws';
+import { allowedPlans } from '../../config/plans';
 
 export const allowedRegions = allowedAwsRegions;
-export const allowedPlans = ['starter', 'pro'] as const;
 
 export const createWebAppSchema = z.object({
   name: z.string().min(3, 'name must be at least 3 characters'),

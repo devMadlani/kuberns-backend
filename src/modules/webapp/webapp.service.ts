@@ -1,36 +1,15 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 
+import { planConfigs } from '../../config/plans';
 import { ApiError } from '../../utils/ApiError';
 
 import { WebAppRepository } from './webapp.repository';
-import { allowedPlans, createWebAppSchema, CreateWebAppInput } from './webapp.schema';
+import { createWebAppSchema, CreateWebAppInput } from './webapp.schema';
 
 type CreateWebAppResult = {
   webAppId: string;
   deploymentId: string;
   status: 'pending';
-};
-
-type PlanResource = {
-  cpu: number;
-  ram: number;
-  storage: number;
-  instanceType: string;
-};
-
-const planToResource: Record<(typeof allowedPlans)[number], PlanResource> = {
-  starter: {
-    cpu: 1,
-    ram: 1024,
-    storage: 10,
-    instanceType: 't2.micro',
-  },
-  pro: {
-    cpu: 2,
-    ram: 4096,
-    storage: 50,
-    instanceType: 't3.medium',
-  },
 };
 
 export class WebAppService {
@@ -49,7 +28,7 @@ export class WebAppService {
     }
 
     const envVarsObject = this.toEnvVarsJson(parsed.envVars);
-    const resources = planToResource[parsed.plan];
+    const resources = planConfigs[parsed.plan].resources;
 
     const result = await this.prisma.$transaction(async (tx) => {
       const webApp = await this.webAppRepository.createWebAppTx(tx, {

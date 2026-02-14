@@ -16,6 +16,31 @@ type InstanceUpdateInput = {
 export class DeploymentRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
+  public async beginProvisioningIfStartable(
+    deploymentId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const result = await this.prisma.deployment.updateMany({
+      where: {
+        id: deploymentId,
+        status: {
+          in: ['pending', 'failed'],
+        },
+        webApp: {
+          userId,
+        },
+      },
+      data: {
+        status: 'provisioning',
+        startedAt: new Date(),
+        finishedAt: null,
+        errorMessage: null,
+      },
+    });
+
+    return result.count === 1;
+  }
+
   public async findByIdAndUser(deploymentId: string, userId: string) {
     return this.prisma.deployment.findFirst({
       where: {
@@ -28,6 +53,7 @@ export class DeploymentRepository {
         webApp: {
           select: {
             id: true,
+            name: true,
             plan: true,
             region: true,
           },
@@ -35,6 +61,7 @@ export class DeploymentRepository {
         environment: {
           select: {
             id: true,
+            name: true,
           },
         },
       },

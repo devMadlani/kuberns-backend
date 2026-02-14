@@ -18,6 +18,7 @@ type LaunchEc2InstanceInput = {
   credentials: AwsCredentialsInput;
   instanceType: string;
   amiId: string;
+  instanceName: string;
 };
 
 type AwsInstanceResult = {
@@ -39,6 +40,17 @@ export class AwsService {
         InstanceType: instanceType,
         MinCount: 1,
         MaxCount: 1,
+        TagSpecifications: [
+          {
+            ResourceType: 'instance',
+            Tags: [
+              {
+                Key: 'Name',
+                Value: input.instanceName,
+              },
+            ],
+          },
+        ],
       }),
     );
 

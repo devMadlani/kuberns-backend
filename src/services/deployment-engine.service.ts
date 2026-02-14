@@ -51,12 +51,15 @@ export class DeploymentEngineService {
     let lifecycleStarted = false;
 
     try {
-      await this.deploymentRepository.updateDeployment(input.deploymentId, {
-        status: 'provisioning',
-        startedAt: new Date(),
-        finishedAt: null,
-        errorMessage: null,
-      });
+      const lockAcquired = await this.deploymentRepository.beginProvisioningIfStartable(
+        input.deploymentId,
+        input.userId,
+      );
+
+      if (!lockAcquired) {
+        throw new ApiError(409, `Deployment cannot be started from status: ${deployment.status}`);
+      }
+
       lifecycleStarted = true;
 
       await this.deploymentRepository.createLog(
@@ -78,11 +81,14 @@ export class DeploymentEngineService {
         instanceType: mappedInstanceType,
       });
 
+      const instanceName = deployment.webApp.name;
+
       const { instanceId } = await this.awsService.launchInstance({
         region: awsConfig.region,
         amiId,
         credentials: awsConfig.credentials,
         instanceType: mappedInstanceType,
+        instanceName,
       });
       await this.deploymentRepository.createLog(
         input.deploymentId,

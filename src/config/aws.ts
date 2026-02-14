@@ -1,8 +1,31 @@
 import { z } from 'zod';
 
-import { AWS_ACCESS_KEY_ID, AWS_AMI_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY } from './env';
+import { AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY } from './env';
 
-export const allowedAwsRegions = ['us-east-1', 'us-west-1', 'eu-central-1', 'ap-south-1'] as const;
+export const allowedAwsRegions = [
+  'us-east-1',
+  'us-east-2',
+  'us-west-1',
+  'us-west-2',
+  'ca-central-1',
+  'eu-central-1',
+  'eu-west-1',
+  'eu-west-2',
+  'eu-west-3',
+  'eu-north-1',
+  'eu-south-1',
+  'ap-south-1',
+  'ap-south-2',
+  'ap-southeast-1',
+  'ap-southeast-2',
+  'ap-southeast-3',
+  'ap-northeast-1',
+  'ap-northeast-2',
+  'ap-northeast-3',
+  'me-south-1',
+  'af-south-1',
+  'sa-east-1',
+] as const;
 
 const awsRegionSchema = z.enum(allowedAwsRegions);
 
@@ -15,7 +38,6 @@ export type AwsCredentialsInput = {
 
 export type AwsResolvedConfig = {
   region: AwsRegion;
-  amiId: string;
   credentials: AwsCredentialsInput;
 };
 
@@ -23,19 +45,14 @@ export const resolveAwsConfig = (input?: {
   accessKeyId?: string;
   secretAccessKey?: string;
   region?: string;
-  amiId?: string;
 }): AwsResolvedConfig => {
   const region = awsRegionSchema.parse(input?.region ?? AWS_REGION);
-  const amiId = input?.amiId ?? AWS_AMI_ID;
-  console.log('Resolved region:', region);
-  console.log('Resolved AMI:', amiId);
 
   const accessKeyId = input?.accessKeyId ?? AWS_ACCESS_KEY_ID;
   const secretAccessKey = input?.secretAccessKey ?? AWS_SECRET_ACCESS_KEY;
 
   return {
     region,
-    amiId,
     credentials: {
       accessKeyId,
       secretAccessKey,

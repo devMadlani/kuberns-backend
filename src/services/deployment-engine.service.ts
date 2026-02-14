@@ -11,7 +11,6 @@ type StartDeploymentInput = {
     accessKeyId?: string;
     secretAccessKey?: string;
     region?: string;
-    amiId?: string;
   };
 };
 
@@ -65,6 +64,14 @@ export class DeploymentEngineService {
         'info',
         `Starting provisioning in ${awsConfig.region}`,
       );
+      await this.deploymentRepository.createLog(input.deploymentId, 'info', 'Resolving AMI...');
+
+      const amiId = await this.awsService.resolveAmiId(awsConfig.region);
+      await this.deploymentRepository.createLog(
+        input.deploymentId,
+        'info',
+        `AMI resolved: ${amiId}`,
+      );
 
       await this.deploymentRepository.updateInstanceByEnvironmentId(deployment.environmentId, {
         status: 'provisioning',
@@ -73,7 +80,7 @@ export class DeploymentEngineService {
 
       const { instanceId } = await this.awsService.launchInstance({
         region: awsConfig.region,
-        amiId: awsConfig.amiId,
+        amiId,
         credentials: awsConfig.credentials,
         instanceType: mappedInstanceType,
       });

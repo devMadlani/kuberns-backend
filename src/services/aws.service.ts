@@ -5,12 +5,19 @@ import {
   RunInstancesCommand,
   waitUntilInstanceRunning,
 } from '@aws-sdk/client-ec2';
+import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
-import { AwsCredentialsInput, AwsResolvedConfig } from '../config/aws';
+import { AwsCredentialsInput, AwsRegion } from '../config/aws';
 import { ApiError } from '../utils/ApiError';
 
-type LaunchEc2InstanceInput = AwsResolvedConfig & {
+const AMAZON_LINUX_2023_SSM_PARAM =
+  '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64';
+
+type LaunchEc2InstanceInput = {
+  region: AwsRegion;
+  credentials: AwsCredentialsInput;
   instanceType: string;
+  amiId: string;
 };
 
 type AwsInstanceResult = {
@@ -18,6 +25,10 @@ type AwsInstanceResult = {
 };
 
 export class AwsService {
+  public async resolveAmiId(region: AwsRegion): Promise<string> {
+    return this.resolveLatestAmi(region);
+  }
+
   public async launchInstance(input: LaunchEc2InstanceInput): Promise<AwsInstanceResult> {
     const client = this.createClient(input.region, input.credentials);
     const instanceType = input.instanceType as _InstanceType;
@@ -96,5 +107,28 @@ export class AwsService {
       region,
       credentials,
     });
+  }
+
+  private createSsmClient(region: string): SSMClient {
+    return new SSMClient({
+      region,
+    });
+  }
+
+  private async resolveLatestAmi(region: AwsRegion): Promise<string> {
+    const client = this.createSsmClient(region);
+    const result = await client.send(
+      new GetParameterCommand({
+        Name: AMAZON_LINUX_2023_SSM_PARAM,
+      }),
+    );
+
+    const amiId = result.Parameter?.Value?.trim();
+
+    if (!amiId) {
+      throw new ApiError(502, `Unable to resolve AMI for region ${region}`);
+    }
+
+    return amiId;
   }
 }

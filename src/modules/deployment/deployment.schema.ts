@@ -14,10 +14,9 @@ export const startDeploymentBodySchema = z
   .object({
     awsCredentials: z
       .object({
-        accessKeyId: z.string().min(1, 'AWS access key id is required'),
-        secretAccessKey: z.string().min(1, 'AWS secret access key is required'),
+        accessKeyId: z.string().min(1, 'AWS access key id is required').optional(),
+        secretAccessKey: z.string().min(1, 'AWS secret access key is required').optional(),
         region: z.enum(allowedAwsRegions).optional(),
-        amiId: z.string().min(1, 'AWS AMI id is required').optional(),
       })
       .optional(),
   })

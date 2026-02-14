@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
-export const allowedRegions = ['us-east-1', 'us-west-1', 'eu-central-1', 'ap-south-1'] as const;
+import { allowedAwsRegions } from '../../config/aws';
+
+export const allowedRegions = allowedAwsRegions;
 export const allowedPlans = ['starter', 'pro'] as const;
 
 export const createWebAppSchema = z.object({

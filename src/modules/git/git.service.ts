@@ -46,12 +46,25 @@ export class GitService {
 
     const accessToken = await this.githubProvider.exchangeCodeForToken(code);
     const githubUser = await this.githubProvider.getAuthenticatedUser(accessToken);
+    const githubId = String(githubUser.id);
     const encryptedToken = encryptToken(accessToken);
+
+    const existingGithubOwner = await this.gitRepository.findUserByGithubId(githubId);
+
+    if (existingGithubOwner && existingGithubOwner.id !== userId) {
+      const isLegacyPlaceholderUser = !existingGithubOwner.email && !existingGithubOwner.password;
+
+      if (isLegacyPlaceholderUser) {
+        await this.gitRepository.clearGithubLinkByUserId(existingGithubOwner.id);
+      } else {
+        throw new ApiError(409, 'This GitHub account is already linked to another user');
+      }
+    }
 
     try {
       await this.gitRepository.upsertGithubToken({
         userId,
-        githubId: String(githubUser.id),
+        githubId,
         githubUsername: githubUser.login,
         encryptedToken,
       });

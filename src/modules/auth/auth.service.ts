@@ -46,6 +46,8 @@ type AuthResponse = {
   user: {
     id: string;
     email: string;
+    githubId?: string | null;
+    githubUsername?: string | null;
   };
   accessToken: string;
 };
@@ -130,12 +132,19 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        githubId: user.githubId,
+        githubUsername: user.githubUsername,
       },
       accessToken,
     };
   }
 
-  public async getMe(userId: string): Promise<{ id: string; email: string }> {
+  public async getMe(userId: string): Promise<{
+    id: string;
+    email: string;
+    githubId?: string | null;
+    githubUsername?: string | null;
+  }> {
     const user = await this.authRepository.findById(userId);
 
     if (!user?.email) {
@@ -145,6 +154,8 @@ export class AuthService {
     return {
       id: user.id,
       email: user.email,
+      githubId: user.githubId,
+      githubUsername: user.githubUsername,
     };
   }
 
@@ -185,6 +196,8 @@ export class AuthService {
       user: {
         id: updatedUser.id,
         email: updatedUser.email,
+        githubId: updatedUser.githubId,
+        githubUsername: updatedUser.githubUsername,
       },
       accessToken,
     };

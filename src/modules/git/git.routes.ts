@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import asyncHandler from '../../middlewares/asyncHandler';
+import authMiddleware from '../../middlewares/auth.middleware';
 
 import { GitController } from './git.controller';
 import { GitRepository } from './git.repository';
@@ -14,6 +15,7 @@ const githubProvider = new GithubProvider();
 const gitService = new GitService(gitRepository, githubProvider);
 const gitController = new GitController(gitService);
 
+gitRouter.use(authMiddleware);
 gitRouter.get('/github/oauth/url', asyncHandler(gitController.getGithubOAuthUrl));
 gitRouter.get('/github/callback', asyncHandler(gitController.githubCallback));
 gitRouter.get('/github/orgs', asyncHandler(gitController.getGithubOrgs));

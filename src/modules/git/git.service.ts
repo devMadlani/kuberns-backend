@@ -40,6 +40,7 @@ export class GitService {
 
   public async handleGithubCallback(
     rawQuery: unknown,
+    userId: string,
   ): Promise<{ githubId: string; githubUsername: string }> {
     const { code } = callbackQuerySchema.parse(rawQuery);
 
@@ -47,11 +48,24 @@ export class GitService {
     const githubUser = await this.githubProvider.getAuthenticatedUser(accessToken);
     const encryptedToken = encryptToken(accessToken);
 
-    await this.gitRepository.upsertGithubToken({
-      githubId: String(githubUser.id),
-      githubUsername: githubUser.login,
-      encryptedToken,
-    });
+    try {
+      await this.gitRepository.upsertGithubToken({
+        userId,
+        githubId: String(githubUser.id),
+        githubUsername: githubUser.login,
+        encryptedToken,
+      });
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && 'code' in error) {
+        const code = String((error as { code?: unknown }).code ?? '');
+
+        if (code === 'P2002') {
+          throw new ApiError(409, 'This GitHub account is already linked to another user');
+        }
+      }
+
+      throw error;
+    }
 
     return {
       githubId: String(githubUser.id),
@@ -59,14 +73,14 @@ export class GitService {
     };
   }
 
-  public async getGithubOrgs(githubUserId?: string): Promise<unknown> {
-    const token = await this.resolveAccessToken(githubUserId);
+  public async getGithubOrgs(userId: string): Promise<unknown> {
+    const token = await this.resolveAccessToken(userId);
     return this.githubProvider.getUserOrgs(token);
   }
 
-  public async getGithubRepos(rawQuery: unknown, githubUserId?: string): Promise<unknown> {
+  public async getGithubRepos(rawQuery: unknown, userId: string): Promise<unknown> {
     const { org } = orgQuerySchema.parse(rawQuery);
-    const token = await this.resolveAccessToken(githubUserId);
+    const token = await this.resolveAccessToken(userId);
 
     if (org) {
       return this.githubProvider.getOrgRepos(org, token);
@@ -75,17 +89,15 @@ export class GitService {
     return this.githubProvider.getUserRepos(token);
   }
 
-  public async getGithubBranches(rawQuery: unknown, githubUserId?: string): Promise<unknown> {
+  public async getGithubBranches(rawQuery: unknown, userId: string): Promise<unknown> {
     const { owner, repo } = branchesQuerySchema.parse(rawQuery);
-    const token = await this.resolveAccessToken(githubUserId);
+    const token = await this.resolveAccessToken(userId);
 
     return this.githubProvider.getRepoBranches(owner, repo, token);
   }
 
-  private async resolveAccessToken(githubUserId?: string): Promise<string> {
-    const encryptedToken = githubUserId
-      ? await this.gitRepository.findTokenByGithubId(githubUserId)
-      : await this.gitRepository.findLatestToken();
+  private async resolveAccessToken(userId: string): Promise<string> {
+    const encryptedToken = await this.gitRepository.findTokenByUserId(userId);
 
     if (!encryptedToken) {
       throw new ApiError(401, 'No GitHub token found. Complete OAuth callback first.');

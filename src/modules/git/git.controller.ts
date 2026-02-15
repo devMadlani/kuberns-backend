@@ -21,7 +21,11 @@ export class GitController {
 
   public githubCallback = async (req: Request, res: Response): Promise<void> => {
     try {
-      const payload = await this.gitService.handleGithubCallback(req.query);
+      if (!req.user?.userId) {
+        throw new ApiError(401, 'Unauthorized');
+      }
+
+      const payload = await this.gitService.handleGithubCallback(req.query, req.user.userId);
 
       const params = new URLSearchParams({
         githubConnected: 'true',
@@ -43,8 +47,11 @@ export class GitController {
 
   public getGithubOrgs = async (req: Request, res: Response): Promise<void> => {
     try {
-      const githubUserId = this.getGithubUserIdFromRequest(req);
-      const payload = await this.gitService.getGithubOrgs(githubUserId);
+      if (!req.user?.userId) {
+        throw new ApiError(401, 'Unauthorized');
+      }
+
+      const payload = await this.gitService.getGithubOrgs(req.user.userId);
 
       res.status(200).json({
         success: true,
@@ -58,8 +65,11 @@ export class GitController {
 
   public getGithubRepos = async (req: Request, res: Response): Promise<void> => {
     try {
-      const githubUserId = this.getGithubUserIdFromRequest(req);
-      const payload = await this.gitService.getGithubRepos(req.query, githubUserId);
+      if (!req.user?.userId) {
+        throw new ApiError(401, 'Unauthorized');
+      }
+
+      const payload = await this.gitService.getGithubRepos(req.query, req.user.userId);
 
       res.status(200).json({
         success: true,
@@ -73,8 +83,11 @@ export class GitController {
 
   public getGithubBranches = async (req: Request, res: Response): Promise<void> => {
     try {
-      const githubUserId = this.getGithubUserIdFromRequest(req);
-      const payload = await this.gitService.getGithubBranches(req.query, githubUserId);
+      if (!req.user?.userId) {
+        throw new ApiError(401, 'Unauthorized');
+      }
+
+      const payload = await this.gitService.getGithubBranches(req.query, req.user.userId);
 
       res.status(200).json({
         success: true,
@@ -85,16 +98,6 @@ export class GitController {
       this.throwMappedError(error);
     }
   };
-
-  private getGithubUserIdFromRequest(req: Request): string | undefined {
-    const headerValue = req.headers['x-github-user-id'];
-
-    if (typeof headerValue === 'string' && headerValue.length > 0) {
-      return headerValue;
-    }
-
-    return undefined;
-  }
 
   private extractErrorMessage(error: unknown): string {
     if (error instanceof ZodError) {

@@ -1,6 +1,7 @@
 import prisma from '../../config/prisma';
 
 export type UpsertGithubTokenInput = {
+  userId: string;
   githubId: string;
   githubUsername: string;
   encryptedToken: string;
@@ -8,15 +9,11 @@ export type UpsertGithubTokenInput = {
 
 export class GitRepository {
   public async upsertGithubToken(input: UpsertGithubTokenInput): Promise<void> {
-    await prisma.user.upsert({
+    await prisma.user.update({
       where: {
-        githubId: input.githubId,
+        id: input.userId,
       },
-      update: {
-        githubUsername: input.githubUsername,
-        githubToken: input.encryptedToken,
-      },
-      create: {
+      data: {
         githubId: input.githubId,
         githubUsername: input.githubUsername,
         githubToken: input.encryptedToken,
@@ -24,28 +21,10 @@ export class GitRepository {
     });
   }
 
-  public async findTokenByGithubId(githubId: string): Promise<string | null> {
+  public async findTokenByUserId(userId: string): Promise<string | null> {
     const user = await prisma.user.findUnique({
       where: {
-        githubId,
-      },
-      select: {
-        githubToken: true,
-      },
-    });
-
-    return user?.githubToken ?? null;
-  }
-
-  public async findLatestToken(): Promise<string | null> {
-    const user = await prisma.user.findFirst({
-      where: {
-        githubToken: {
-          not: null,
-        },
-      },
-      orderBy: {
-        updatedAt: 'desc',
+        id: userId,
       },
       select: {
         githubToken: true,

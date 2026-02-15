@@ -647,3 +647,10 @@ On `git commit`, staged TypeScript files are auto-linted and formatted before co
 - Keep `JWT_SECRET` strong and private.
 - Restrict CORS to exact frontend URL.
 - Run migrations in deployment pipeline before app startup.
+
+## 13. Estimated Time
+
+- Frontend: 7-8 hours
+- Backend: 12-14 hours
+- Deployment/Infra: 4-5 hours
+- Documentation + Testing: 3-4 hours

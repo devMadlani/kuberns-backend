@@ -612,7 +612,35 @@ Response:
 - `npm run prisma:studio` - open Prisma Studio
 - `npm run lint` - lint backend source
 
-## 11. Production Notes
+## 11. Husky and Pre-commit Quality Checks
+
+This backend includes Husky and lint-staged for local commit-time quality checks.
+
+### What is configured
+
+- `prepare` script runs `husky install`.
+- `lint-staged` is configured in `package.json`:
+  - `src/**/*.{ts,tsx}` -> `eslint --fix` and `prettier --write`
+
+### Setup
+
+After install, initialize hooks automatically:
+
+```bash
+npm install
+```
+
+If hooks are missing, run:
+
+```bash
+npm run prepare
+```
+
+### Expected behavior
+
+On `git commit`, staged TypeScript files are auto-linted and formatted before commit finalization.
+
+## 12. Production Notes
 
 - Use managed Postgres.
 - Use IAM role instead of static AWS keys.

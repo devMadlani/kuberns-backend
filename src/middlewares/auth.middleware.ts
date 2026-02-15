@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { NODE_ENV } from '../config/env';
 import { ApiError } from '../utils/ApiError';
 import { AUTH_COOKIE_NAME, verifyAccessToken } from '../utils/jwt';
 

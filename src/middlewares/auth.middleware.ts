@@ -22,7 +22,7 @@ const authMiddleware = (req: Request, _res: Response, next: NextFunction): void 
 
 export const buildAuthCookieOptions = () => ({
   httpOnly: true,
-  secure: NODE_ENV === 'production',
+  secure: false,
   sameSite: 'lax' as const,
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000,

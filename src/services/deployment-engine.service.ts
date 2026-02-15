@@ -1,4 +1,5 @@
 import { resolveAwsConfig } from '../config/aws';
+import logger from '../config/logger';
 import { planConfigs } from '../config/plans';
 import { DeploymentRepository } from '../modules/deployment/deployment.repository';
 import { ApiError } from '../utils/ApiError';
@@ -27,6 +28,14 @@ export class DeploymentEngineService {
   ) {}
 
   public async startDeployment(input: StartDeploymentInput): Promise<StartDeploymentResult> {
+    logger.warn(
+      `[DeploymentStart] Received start request deploymentId=${input.deploymentId} userId=${input.userId} hasAccessKeyOverride=${Boolean(
+        input.awsOverrides?.accessKeyId,
+      )} hasSecretKeyOverride=${Boolean(input.awsOverrides?.secretAccessKey)} hasRegionOverride=${Boolean(
+        input.awsOverrides?.region,
+      )}`,
+    );
+
     const deployment = await this.deploymentRepository.findByIdAndUser(
       input.deploymentId,
       input.userId,
@@ -41,6 +50,11 @@ export class DeploymentEngineService {
       ...input.awsOverrides,
       region: input.awsOverrides?.region ?? deployment.webApp.region,
     });
+    logger.warn(
+      `[DeploymentStart] Resolved AWS config deploymentId=${input.deploymentId} region=${awsConfig.region} credentialSource=${
+        awsConfig.credentials ? 'explicit-static' : 'default-provider-chain'
+      }`,
+    );
 
     let lifecycleStarted = false;
 
@@ -51,6 +65,9 @@ export class DeploymentEngineService {
       );
 
       if (!lockAcquired) {
+        logger.warn(
+          `[DeploymentStart] Lock rejected deploymentId=${input.deploymentId} currentStatus=${deployment.status}`,
+        );
         throw new ApiError(409, `Deployment cannot be started from status: ${deployment.status}`);
       }
 
@@ -128,6 +145,9 @@ export class DeploymentEngineService {
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown deployment error';
+      logger.warn(
+        `[DeploymentStart] Failed deploymentId=${input.deploymentId} lifecycleStarted=${lifecycleStarted} error=${message}`,
+      );
 
       if (lifecycleStarted) {
         await this.deploymentRepository.updateDeployment(input.deploymentId, {

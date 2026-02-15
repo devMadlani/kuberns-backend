@@ -8,6 +8,7 @@ import {
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
 import { AwsCredentialsInput, AwsRegion } from '../config/aws';
+import logger from '../config/logger';
 import { ApiError } from '../utils/ApiError';
 
 const AMAZON_LINUX_2023_SSM_PARAM =
@@ -116,12 +117,15 @@ export class AwsService {
 
   private createClient(region: string, credentials?: AwsCredentialsInput): EC2Client {
     if (credentials) {
+      logger.warn(
+        `[AWS] Creating EC2 client with explicit static credentials for region=${region}`,
+      );
       return new EC2Client({
         region,
         credentials,
       });
     }
-
+    logger.warn(`[AWS] Creating EC2 client without  credentials for region=${region}`);
     return new EC2Client({
       region,
     });

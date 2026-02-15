@@ -44,7 +44,7 @@ app.use('/git', gitRouter);
 app.use('/metadata', metadataRouter);
 app.use('/plans', plansRouter);
 app.use('/webapps', webAppRouter);
-app.use('/', deploymentRouter);
+app.use('/deployments', deploymentRouter);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 

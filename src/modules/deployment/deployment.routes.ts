@@ -19,11 +19,8 @@ const deploymentService = new DeploymentService(deploymentRepository, deployment
 const deploymentController = new DeploymentController(deploymentService);
 
 deploymentRouter.use(authMiddleware);
-deploymentRouter.post(
-  '/deployments/:deploymentId/start',
-  asyncHandler(deploymentController.startDeployment),
-);
-deploymentRouter.get('/deployments/:id', asyncHandler(deploymentController.getDeploymentStatus));
-deploymentRouter.get('/deployments/:id/logs', asyncHandler(deploymentController.getDeploymentLogs));
+deploymentRouter.post('/:deploymentId/start', asyncHandler(deploymentController.startDeployment));
+deploymentRouter.get('/:id', asyncHandler(deploymentController.getDeploymentStatus));
+deploymentRouter.get('/:id/logs', asyncHandler(deploymentController.getDeploymentLogs));
 
 export default deploymentRouter;

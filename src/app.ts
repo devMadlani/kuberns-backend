@@ -41,7 +41,6 @@ routes.get(
 app.use(routes);
 app.use('/auth', authRouter);
 app.use('/git', gitRouter);
-app.use('/api', gitRouter);
 app.use('/metadata', metadataRouter);
 app.use('/plans', plansRouter);
 app.use('/webapps', webAppRouter);

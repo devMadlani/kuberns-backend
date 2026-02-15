@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import asyncHandler from '../../middlewares/asyncHandler';
 import authMiddleware from '../../middlewares/auth.middleware';
+import { EmailService } from '../../services/email.service';
 
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
@@ -10,7 +11,8 @@ import { AuthService } from './auth.service';
 const authRouter = Router();
 
 const authRepository = new AuthRepository();
-const authService = new AuthService(authRepository);
+const emailService = new EmailService();
+const authService = new AuthService(authRepository, emailService);
 const authController = new AuthController(authService);
 
 authRouter.post('/register', asyncHandler(authController.register));

@@ -28,3 +28,11 @@ export const GITHUB_TOKEN_ENCRYPTION_KEY =
 export const AWS_ACCESS_KEY_ID = requireEnv('AWS_ACCESS_KEY_ID');
 export const AWS_SECRET_ACCESS_KEY = requireEnv('AWS_SECRET_ACCESS_KEY');
 export const AWS_REGION = process.env.AWS_REGION;
+
+export const MAIL_ENABLED = process.env.MAIL_ENABLED === 'true';
+export const SMTP_HOST = process.env.SMTP_HOST;
+export const SMTP_PORT = Number(process.env.SMTP_PORT ?? 587);
+export const SMTP_SECURE = process.env.SMTP_SECURE === 'true';
+export const SMTP_USER = process.env.SMTP_USER;
+export const SMTP_PASS = process.env.SMTP_PASS;
+export const MAIL_FROM = process.env.MAIL_FROM ?? SMTP_USER;

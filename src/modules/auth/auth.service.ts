@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { NODE_ENV } from '../../config/env';
 import logger from '../../config/logger';
+import { EmailService } from '../../services/email.service';
 import { ApiError } from '../../utils/ApiError';
 import { AuthTokenPayload, signAccessToken } from '../../utils/jwt';
 
@@ -56,7 +57,10 @@ type RegisterResponse = {
 };
 
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly emailService: EmailService,
+  ) {}
 
   public async register(rawBody: unknown): Promise<RegisterResponse> {
     const { email, password } = registerSchema.parse(rawBody);
@@ -88,6 +92,7 @@ export class AuthService {
       });
     }
 
+    await this.emailService.sendOtpEmail(email, otp);
     logger.info(`OTP for ${email}: ${otp}`);
 
     return {
@@ -202,6 +207,7 @@ export class AuthService {
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
     await this.authRepository.updateOtp(email, hashedOtp, otpExpiry);
+    await this.emailService.sendOtpEmail(email, otp);
     logger.info(`OTP for ${email}: ${otp}`);
 
     return {

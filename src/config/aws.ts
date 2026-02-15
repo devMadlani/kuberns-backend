@@ -38,7 +38,7 @@ export type AwsCredentialsInput = {
 
 export type AwsResolvedConfig = {
   region: AwsRegion;
-  credentials: AwsCredentialsInput;
+  credentials?: AwsCredentialsInput;
 };
 
 export const resolveAwsConfig = (input?: {
@@ -50,12 +50,24 @@ export const resolveAwsConfig = (input?: {
 
   const accessKeyId = input?.accessKeyId ?? AWS_ACCESS_KEY_ID;
   const secretAccessKey = input?.secretAccessKey ?? AWS_SECRET_ACCESS_KEY;
+  const hasAccessKeyId = Boolean(accessKeyId);
+  const hasSecretAccessKey = Boolean(secretAccessKey);
+
+  if (hasAccessKeyId !== hasSecretAccessKey) {
+    throw new Error(
+      'Both AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY must be set together, or both omitted',
+    );
+  }
 
   return {
     region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
+    ...(hasAccessKeyId && hasSecretAccessKey
+      ? {
+          credentials: {
+            accessKeyId: accessKeyId as string,
+            secretAccessKey: secretAccessKey as string,
+          },
+        }
+      : {}),
   };
 };

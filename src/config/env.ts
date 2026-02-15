@@ -25,8 +25,8 @@ export const GITHUB_CALLBACK_URL = requireEnv('GITHUB_CALLBACK_URL');
 export const GITHUB_TOKEN_ENCRYPTION_KEY =
   process.env.GITHUB_TOKEN_ENCRYPTION_KEY ?? GITHUB_CLIENT_SECRET;
 
-export const AWS_ACCESS_KEY_ID = requireEnv('AWS_ACCESS_KEY_ID');
-export const AWS_SECRET_ACCESS_KEY = requireEnv('AWS_SECRET_ACCESS_KEY');
+export const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 export const AWS_REGION = process.env.AWS_REGION;
 
 export const MAIL_ENABLED = process.env.MAIL_ENABLED === 'true';

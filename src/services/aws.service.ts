@@ -15,7 +15,7 @@ const AMAZON_LINUX_2023_SSM_PARAM =
 
 type LaunchEc2InstanceInput = {
   region: AwsRegion;
-  credentials: AwsCredentialsInput;
+  credentials?: AwsCredentialsInput;
   instanceType: string;
   amiId: string;
   instanceName: string;
@@ -65,7 +65,7 @@ export class AwsService {
 
   public async waitUntilRunning(
     region: string,
-    credentials: AwsCredentialsInput,
+    credentials: AwsCredentialsInput | undefined,
     instanceId: string,
   ): Promise<void> {
     const client = this.createClient(region, credentials);
@@ -90,7 +90,7 @@ export class AwsService {
 
   public async getPublicIp(
     region: string,
-    credentials: AwsCredentialsInput,
+    credentials: AwsCredentialsInput | undefined,
     instanceId: string,
   ): Promise<string> {
     const client = this.createClient(region, credentials);
@@ -114,10 +114,16 @@ export class AwsService {
     return publicIp;
   }
 
-  private createClient(region: string, credentials: AwsCredentialsInput): EC2Client {
+  private createClient(region: string, credentials?: AwsCredentialsInput): EC2Client {
+    if (credentials) {
+      return new EC2Client({
+        region,
+        credentials,
+      });
+    }
+
     return new EC2Client({
       region,
-      credentials,
     });
   }
 

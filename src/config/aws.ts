@@ -13,17 +13,12 @@ export const allowedAwsRegions = [
   'eu-west-2',
   'eu-west-3',
   'eu-north-1',
-  'eu-south-1',
   'ap-south-1',
-  'ap-south-2',
   'ap-southeast-1',
   'ap-southeast-2',
-  'ap-southeast-3',
   'ap-northeast-1',
   'ap-northeast-2',
   'ap-northeast-3',
-  'me-south-1',
-  'af-south-1',
   'sa-east-1',
 ] as const;
 

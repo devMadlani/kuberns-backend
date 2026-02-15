@@ -40,17 +40,12 @@ routes.get(
 
 app.use(routes);
 app.use('/auth', authRouter);
-app.use('/api/auth', authRouter);
 app.use('/git', gitRouter);
 app.use('/api', gitRouter);
 app.use('/metadata', metadataRouter);
-app.use('/api/metadata', metadataRouter);
 app.use('/plans', plansRouter);
-app.use('/api/plans', plansRouter);
 app.use('/webapps', webAppRouter);
-app.use('/api/webapps', webAppRouter);
 app.use('/', deploymentRouter);
-app.use('/api', deploymentRouter);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 

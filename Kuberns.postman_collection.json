@@ -1,0 +1,577 @@
+{
+  "info": {
+    "_postman_id": "7d8be9fb-08f0-4efe-b3a2-a4c23097f7b4",
+    "name": "Kuberns API",
+    "description": "Postman collection for Kuberns backend routes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /auth/verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"otp\": \"{{otp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /auth/resend-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /auth/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "GET /auth/me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /auth/logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GitHub",
+      "item": [
+        {
+          "name": "GET /git/github/oauth/url",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/git/github/oauth/url",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "git",
+                "github",
+                "oauth",
+                "url"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /git/github/callback?code=",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/git/github/callback?code={{githubCode}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "git",
+                "github",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "{{githubCode}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /git/github/orgs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/git/github/orgs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "git",
+                "github",
+                "orgs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /git/github/repos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/git/github/repos?org={{githubOrg}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "git",
+                "github",
+                "repos"
+              ],
+              "query": [
+                {
+                  "key": "org",
+                  "value": "{{githubOrg}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /git/github/branches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/git/github/branches?owner={{repoOwner}}&repo={{repoName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "git",
+                "github",
+                "branches"
+              ],
+              "query": [
+                {
+                  "key": "owner",
+                  "value": "{{repoOwner}}"
+                },
+                {
+                  "key": "repo",
+                  "value": "{{repoName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Metadata and Plans",
+      "item": [
+        {
+          "name": "GET /metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metadata",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "metadata"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/plans",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "plans"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "WebApps",
+      "item": [
+        {
+          "name": "POST /webapps",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"my-app-{{timestamp}}\",\n  \"region\": \"{{region}}\",\n  \"plan\": \"{{plan}}\",\n  \"framework\": \"{{framework}}\",\n  \"repository\": {\n    \"provider\": \"github\",\n    \"owner\": \"{{repoOwner}}\",\n    \"repo\": \"{{repoName}}\",\n    \"branch\": \"{{branch}}\"\n  },\n  \"port\": 3000,\n  \"envVars\": [\n    {\n      \"key\": \"NODE_ENV\",\n      \"value\": \"production\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/webapps",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webapps"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('timestamp', Date.now().toString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body && body.webAppId) pm.collectionVariables.set('webAppId', body.webAppId);",
+                  "if (body && body.deploymentId) pm.collectionVariables.set('deploymentId', body.deploymentId);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "GET /webapps",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webapps",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webapps"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /webapps/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/webapps/{{webAppId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webapps",
+                "{{webAppId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Deployments",
+      "item": [
+        {
+          "name": "POST /deployments/:deploymentId/start",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/deployments/{{deploymentId}}/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deployments",
+                "{{deploymentId}}",
+                "start"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /deployments/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/deployments/{{deploymentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deployments",
+                "{{deploymentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /deployments/:id/logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/deployments/{{deploymentId}}/logs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deployments",
+                "{{deploymentId}}",
+                "logs"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "email",
+      "value": "user@example.com"
+    },
+    {
+      "key": "password",
+      "value": "password123"
+    },
+    {
+      "key": "otp",
+      "value": "123456"
+    },
+    {
+      "key": "githubCode",
+      "value": ""
+    },
+    {
+      "key": "githubOrg",
+      "value": ""
+    },
+    {
+      "key": "repoOwner",
+      "value": "octocat"
+    },
+    {
+      "key": "repoName",
+      "value": "hello-world"
+    },
+    {
+      "key": "branch",
+      "value": "main"
+    },
+    {
+      "key": "region",
+      "value": "ap-south-1"
+    },
+    {
+      "key": "plan",
+      "value": "starter"
+    },
+    {
+      "key": "framework",
+      "value": "react"
+    },
+    {
+      "key": "webAppId",
+      "value": ""
+    },
+    {
+      "key": "deploymentId",
+      "value": ""
+    },
+    {
+      "key": "timestamp",
+      "value": ""
+    }
+  ]
+}
